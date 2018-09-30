@@ -1,7 +1,7 @@
 // first try at live beat detection from fft data
 // contains two classes : one for onset detection - OnsetDetect and one to detect when amplitude reaches a certain treshold - BeatDetect (probably ill named)
 
-var file ='../files/Tripping.mp3'
+var file ='https://curriculum.code.org/media/uploads/touch.mp3'
 
 
 var source_file; // sound file
@@ -30,11 +30,12 @@ function setup() {
   textAlign(CENTER);
 
   src_length = source_file.duration();
-  source_file.playMode('restart'); 
-  println("source duration: " +src_length);
+  source_file.playMode('restart');
+  //println("source duration: " +src_length);
 
   // draw the waveform to an off-screen graphic
   var peaks = source_file.getPeaks(); // get an array of peaks
+  console.log(peaks.length);
   pg = createGraphics(width,150);
   pg.background(100);
   pg.translate(0,75);
@@ -54,7 +55,7 @@ function setup() {
    /*
      instantiate peak detectors that will
      detect peaks in part of the frequency spectrum of the fft
-    */ 
+    */
 
    // low band : 40Hz-120Hz
    detectors.push( new p5.PeakDetect(40, 120, 0.8, 20) );
@@ -87,7 +88,7 @@ function draw() {
 
 	image(pg,0,100); // display our waveform representation
 
-  // draw playhead position 
+  // draw playhead position
   fill(255,255,180,150);
   noStroke();
   rect(map(source_file.currentTime(),0,src_length,0,windowWidth),100,3,150);
@@ -95,10 +96,10 @@ function draw() {
   //display current time
   text("current time: "+nfc(source_file.currentTime(),1)+" s",60,50);
 
-  fft.analyze(); 
+  fft.analyze();
 
   // display and update our detector objects
-  text("peak detection ",750,15);
+  text("peak detection ", 750, 15);
   text("40Hz-120Hz", 650, 80);
   text("140Hz-400Hz", 750, 80);
   text("400Hz-2.6kHz", 850, 80);
@@ -115,13 +116,13 @@ function draw() {
 }
 
 function mouseClicked(){
-	if(mouseY>100 && mouseY<350){		
-		var playpos = constrain(map(mouseX,0,windowWidth,0,src_length),0,src_length);	
-		source_file.play();	
-		source_file.play(0,1,1,playpos,src_length);	
+	if(mouseY>100 && mouseY<350){
+		var playpos = constrain(map(mouseX,0,windowWidth,0,src_length),0,src_length);
+		source_file.play();
+		source_file.play(0,1,1,playpos,src_length);
 		playing = true;
-	//	button.html('pause');		
-	}	
+	//	button.html('pause');
+	}
 	return false;//callback for p5js
 }
 
@@ -142,7 +143,7 @@ function play(){
 		source_file.play();
 	//	button.html('pause');
 		playing = true;
-	}	
+	}
 }
 
 // Beat Ball Class
@@ -170,3 +171,5 @@ BeatBall.prototype.trigger = function(value) {
 function gotPeak(value, index) {
   beatBalls[index].trigger(value);
 }
+
+
